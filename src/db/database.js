@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-// import dotenv from "dotenv";
-// dotenv.config();
+import dotenv from "dotenv";
+dotenv.config();
 
 process.env.NODE_ENV !== "production"
   ? (URL = "mongodb://127.0.0.1:27017/Authentication_system")
