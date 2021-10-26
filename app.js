@@ -11,7 +11,7 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
-const PORT = process.env.PORT || 8000;
+const port = process.env.PORT || 8000;
 
 // // routes
 app.use(router);
@@ -20,6 +20,6 @@ app.get("/", (_, res) => {
   res.json({ hello: "Hello" });
 });
 
-app.listen(PORT, () => {
-  console.log(`App listening on port: ${PORT}`);
+app.listen(port, () => {
+  console.log(`App listening on port: ${port}`);
 });
