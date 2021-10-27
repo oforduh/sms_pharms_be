@@ -34,12 +34,44 @@ const schema = new mongoose.Schema({
   ],
 });
 
-// schema.pre();
+// convert the user mogo object to a json object and delete some user field
+schema.methods.toJSON = function () {
+  const user = this;
+  const userObject = user.toObject();
+
+  delete userObject.password;
+  delete userObject.tokens;
+  return userObject;
+};
+
+// This generate tokens for all new users
 schema.methods.generateAuthToken = async function () {
   const user = this;
   const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRETE);
-  console.log(user.token);
+  user.tokens = user.tokens.concat({ token });
+  await user.save();
   return token;
+};
+
+// Hash the password before it saves to the database
+schema.pre("save", async function (next) {
+  const user = this;
+  if (user.isModified("password")) {
+    user.password = await bcrypt.hash(user.password, 8);
+  }
+});
+
+// check if the credentials already exost in the database
+schema.statics.findByCredentials = async function (email, password) {
+  const user = await superAdminModel.findOne({ email });
+  if (!user) {
+    throw new Error("Incorrect Email or Password");
+  }
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    throw new Error("Incorrect Email or Password");
+  }
+  return user;
 };
 
 const superAdminModel = mongoose.model("user", schema);
