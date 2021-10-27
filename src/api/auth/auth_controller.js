@@ -44,6 +44,6 @@ export const handleUserLogin = async (req, res) => {
     res.status(200).json({ data: user, token: token });
   } catch (error) {
     console.log(error);
-    res.status(400).json({ error: "Invalid username or password", e: error });
+    res.status(400).json({ message: "Invalid username or password" });
   }
 };
