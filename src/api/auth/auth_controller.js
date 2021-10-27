@@ -33,6 +33,12 @@ export const handleUserRegistration = async (req, res) => {
 export const handleUserLogin = async (req, res) => {
   const { email, password } = req.body;
   try {
+    // check if the request is empty
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "username and password are required" });
+    }
     const user = await superAdminModel.findByCredentials(email, password);
     const token = await user.generateAuthToken();
     res.status(200).json({ data: user, token: token });
