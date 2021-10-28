@@ -33,6 +33,25 @@ const schema = new mongoose.Schema(
         },
       },
     ],
+    phonenumber: {
+      type: String,
+      trim: true,
+      unique: true,
+      validate(value) {
+        let number = value;
+
+        if (number.charAt(0) === "+") {
+          if (number.substring(0, 4) !== "+234")
+            throw new Error("Invalid phone number");
+          number = number.substring(4);
+        }
+
+        // We removed the +234 so we can pass it as a validator to validate if it is a nigerina number
+        if (!validator.isMobilePhone(number, ["en-NG"])) {
+          throw new Error("Invalid phone number");
+        }
+      },
+    },
   },
   { timestamps: true }
 );
@@ -64,18 +83,5 @@ schema.pre("save", async function (next) {
   }
 });
 
-// check if the credentials already exost in the database
-schema.statics.findByCredentials = async function (email, password) {
-  const user = await superAdminModel.findOne({ email });
-  if (!user) {
-    throw new Error("Incorrect Email or Password");
-  }
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    throw new Error("Incorrect Email or Password");
-  }
-  return user;
-};
-
-const superAdminModel = mongoose.model("superAdminUser", schema);
-export default superAdminModel;
+const AdminModel = mongoose.model("AdminModelUser", schema);
+export default AdminModel;

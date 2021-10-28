@@ -47,3 +47,17 @@ export const handleUserLogin = async (req, res) => {
     res.status(400).json({ message: "Invalid username or password" });
   }
 };
+
+export const handleUserLogout = async (req, res) => {
+  try {
+    req.user.tokens = req.user.tokens.filter((token) => {
+      return token.token !== req.token;
+    });
+    res.status(200).send({ message: req.user.tokens });
+    await req.user.save();
+
+    res.status(200).send({ message: "Logged out successfully" });
+  } catch (e) {
+    res.status(500).send();
+  }
+};

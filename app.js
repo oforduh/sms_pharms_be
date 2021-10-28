@@ -5,6 +5,7 @@ import { dbConnection } from "./src/db/database.js";
 dbConnection();
 
 import authRouter from "./src/api/auth/auth_router.js";
+import adminRouter from "./src/api/adminAuth/adminAuth_router.js";
 
 const app = express();
 app.use(cors());
@@ -13,8 +14,9 @@ app.use(express.json());
 
 const port = process.env.PORT || 8000;
 
-// // routes
+// routes
 app.use("/api/auth", authRouter);
+app.use("/api/auth/admin", adminRouter);
 
 app.get("/", (_, res) => {
   res.json({ hello: "Hello" });
