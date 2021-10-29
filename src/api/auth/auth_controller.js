@@ -61,3 +61,12 @@ export const handleUserLogout = async (req, res) => {
     res.status(500).send();
   }
 };
+
+export const getLoggedUserDetails = async (req, res) => {
+  try {
+    console.log("it works");
+    res.status(200).send({ message: "Logged out successfully" });
+  } catch (e) {
+    res.status(500).send();
+  }
+};
