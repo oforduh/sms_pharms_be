@@ -56,3 +56,14 @@ export const handleGetAdminList = async (req, res) => {
     res.status(500).send({ error: "Could not fetch admin lists" });
   }
 };
+
+export const handleEditAdminDetails = async (req, res) => {
+  try {
+    const admins = await AdminModel.findOneAndUpdate({});
+    res
+      .status(200)
+      .send({ message: `Fetched ${admins.length} record(s)`, admins });
+  } catch (e) {
+    res.status(500).send({ error: "Could not fetch admin lists" });
+  }
+};
