@@ -64,9 +64,9 @@ export const handleUserLogout = async (req, res) => {
 
 export const getLoggedUserDetails = async (req, res) => {
   try {
-    console.log("it works");
-    res.status(200).send({ message: "Logged out successfully" });
+    const user = req.user;
+    res.status(200).send({ user });
   } catch (e) {
-    res.status(500).send();
+    res.status(401).json({ message: "unable to fetch logged in user" });
   }
 };
