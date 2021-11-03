@@ -59,10 +59,15 @@ export const handleGetAdminList = async (req, res) => {
 
 export const handleEditAdminDetails = async (req, res) => {
   try {
-    const admins = await AdminModel.findOneAndUpdate({});
-    res
-      .status(200)
-      .send({ message: `Fetched ${admins.length} record(s)`, admins });
+    //   const {}=req.body
+    const { id } = req.params;
+    const admins = await AdminModel.findOne({ id });
+    if (!admins) return res.status(401).json({ message: "Not Found" });
+    console.log(admins);
+ 
+    // res
+    //   .status(200)
+    //   .send({ message: `Fetched ${admins.length} record(s)`, admins });
   } catch (e) {
     res.status(500).send({ error: "Could not fetch admin lists" });
   }

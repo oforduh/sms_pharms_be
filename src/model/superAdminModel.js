@@ -66,7 +66,7 @@ schema.pre("save", async function (next) {
   }
 });
 
-// check if the credentials already exost in the database
+// check if the credentials already exst in the database
 schema.statics.findByCredentials = async function (email, password) {
   const user = await superAdminModel.findOne({ email });
   if (!user) {

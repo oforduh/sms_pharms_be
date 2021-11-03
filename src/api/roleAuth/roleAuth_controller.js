@@ -3,11 +3,13 @@ import roleModel from "../../model/roles.js";
 export const handleCreateRoles = async (req, res) => {
   const { role } = req.body;
   try {
-    const role = new roleModel({ role });
-    await role.save();
+    let newRole = await roleModel.findByCredentials(role);
+    newRole = new roleModel({ role });
+    await newRole.save();
+    res.status(200).json({ role: newRole });
   } catch (e) {
     return res.status(400).send({
-      e,
+      message: e.message,
     });
   }
 };
@@ -22,4 +24,3 @@ export const handleGetRoleList = async (req, res) => {
     res.status(500).send({ error: "Could not fetch admin lists" });
   }
 };
-                                                
