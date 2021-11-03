@@ -17,8 +17,8 @@ const port = process.env.PORT || 8000;
 
 // routes
 app.use("/api/auth", authRouter);
-app.use("/api/auth/admin", adminRouter);
-app.use("/api/auth/role", roleRouter);
+app.use("/api/auth", adminRouter);
+app.use("/api/auth", roleRouter);
 
 app.get("/", (_, res) => {
   res.json({ hello: "Hello" });

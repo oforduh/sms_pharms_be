@@ -54,8 +54,9 @@ const schema = new mongoose.Schema(
     },
     roles: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: "roleModel",
+      required: true,
+      default: new mongoose.Types.ObjectId("618293493c754ff3716ed49b"),
     },
   },
   { timestamps: true }

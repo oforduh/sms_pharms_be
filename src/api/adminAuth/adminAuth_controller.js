@@ -59,15 +59,27 @@ export const handleGetAdminList = async (req, res) => {
 
 export const handleEditAdminDetails = async (req, res) => {
   try {
-    //   const {}=req.body
+    const { email } = req.body;
     const { id } = req.params;
-    const admins = await AdminModel.findOne({ id });
-    if (!admins) return res.status(401).json({ message: "Not Found" });
-    console.log(admins);
- 
-    // res
-    //   .status(200)
-    //   .send({ message: `Fetched ${admins.length} record(s)`, admins });
+    let admin = await AdminModel.findOne({ id });
+    if (!admin) return res.status(401).json({ message: "Not Found" });
+    admin.email = email;
+    await admin.save();
+
+    res
+      .status(200)
+      .send({ message: `Profile have been successfully Updated`, admin });
+  } catch (e) {
+    res.status(500).send({ error: "Could not fetch admin lists", e });
+  }
+};
+
+export const getAdminDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let admin = await AdminModel.findOne({ id });
+    if (!admin) return res.status(401).json({ message: "Not Found" });
+    res.status(200).send({ admin });
   } catch (e) {
     res.status(500).send({ error: "Could not fetch admin lists" });
   }
