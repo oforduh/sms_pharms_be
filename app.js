@@ -13,7 +13,7 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 7000;
 
 // routes
 app.use("/api/auth", authRouter);

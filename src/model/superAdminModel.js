@@ -17,13 +17,20 @@ const schema = new mongoose.Schema(
       // validate is inbuilt while validator is a package
       validate(value) {
         if (!validator.isEmail(value)) {
-          throw new Error("Email is required");
+          throw new Error("Invalid Email Address");
         }
       },
     },
     password: {
       type: String,
       required: true,
+      trim: true,
+    },
+    roles: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "role",
+      required: true,
+      default: mongoose.Types.ObjectId("6182aa90a2a4a9a289671e9e"),
     },
     tokens: [
       {

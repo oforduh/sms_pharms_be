@@ -7,20 +7,18 @@ const schema = new mongoose.Schema(
       unique: true,
       lowercase: true,
     },
-
-    permissions: [
-      {
-        permission: {
-          type: String,
-        },
-      },
-    ],
   },
   { timestamps: true }
 );
 
 schema.virtual("adminModel", {
-  ref: "AdminModel",
+  ref: "AdminModelUser",
+  localField: "_id",
+  foreignField: "roles",
+});
+
+schema.virtual("superAdminModel", {
+  ref: "superAdminUser",
   localField: "_id",
   foreignField: "roles",
 });

@@ -54,15 +54,22 @@ const schema = new mongoose.Schema(
     },
     roles: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "roleModel",
-      required: true,
-      default: new mongoose.Types.ObjectId("618293493c754ff3716ed49b"),
+      ref: "role",
+      required: false,
+      default: mongoose.Types.ObjectId("61851499519c97838404ec9e"),
     },
+    permissions: [
+      {
+        permission: {
+          type: String,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
 
-// convert the user mogo object to a json object and delete some user field
+// convert the user mongo object to a json object and delete some user field
 schema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();

@@ -1,10 +1,11 @@
 import AdminModel from "../../model/admin.js";
+import roleModel from "../../model/roles.js";
 
 export const handleUserRegistration = async (req, res) => {
-  const { email, password, phonenumber } = req.body;
+  const { email, password, phonenumber, roles } = req.body;
   try {
     console.log(phonenumber);
-    const user = new AdminModel({ email, password, phonenumber });
+    const user = new AdminModel({ email, password, phonenumber, roles });
     await user.save();
     const token = await user.generateAuthToken();
     res.status(200).json({ data: user, token: token });
@@ -49,9 +50,20 @@ export const handleUserRegistration = async (req, res) => {
 export const handleGetAdminList = async (req, res) => {
   try {
     const admins = await AdminModel.find();
+    const data = [];
+
+    for (const admin of admins) {
+      const role = await roleModel.findById(admin.roles);
+
+      const obj = admin;
+      obj.roles.data = { ...role };
+
+      data.push(obj);
+    }
+
     res
       .status(200)
-      .send({ message: `Fetched ${admins.length} record(s)`, admins });
+      .send({ message: `Fetched ${admins.length} record(s)`, admins: data });
   } catch (e) {
     res.status(500).send({ error: "Could not fetch admin lists" });
   }
@@ -60,8 +72,8 @@ export const handleGetAdminList = async (req, res) => {
 export const handleEditAdminDetails = async (req, res) => {
   try {
     const { email } = req.body;
-    const { id } = req.params;
-    let admin = await AdminModel.findOne({ id });
+    const _id = req.params.id;
+    let admin = await AdminModel.findOne({ _id });
     if (!admin) return res.status(401).json({ message: "Not Found" });
     admin.email = email;
     await admin.save();
@@ -70,16 +82,46 @@ export const handleEditAdminDetails = async (req, res) => {
       .status(200)
       .send({ message: `Profile have been successfully Updated`, admin });
   } catch (e) {
-    res.status(500).send({ error: "Could not fetch admin lists", e });
+    if (e.code === 11000) {
+      if (e.keyValue.email) {
+        return res.status(400).send({
+          message: "Email already exist",
+        });
+      }
+    }
   }
 };
 
 export const getAdminDetails = async (req, res) => {
   try {
-    const { id } = req.params;
-    let admin = await AdminModel.findOne({ id });
-    if (!admin) return res.status(401).json({ message: "Not Found" });
+    const _id = req.params.id;
+    let admin = await AdminModel.findOne({ _id });
+
+    admin.populate("roles").execPopulate()
+
+    if (!admin) return res.status(401).json({ message: "User Not Found" });
     res.status(200).send({ admin });
+  } catch (e) {
+    res.status(500).send({ error: "User Not Found", e });
+  }
+};
+
+export const handleDeleteAdminDetails = async (req, res) => {
+  const _id = req.params.id;
+  try {
+    let admin = await AdminModel.findOneAndDelete({ _id });
+    res.status(200).send({ message: `Deleted 1 record(s) permanently` });
+  } catch (e) {
+    res.status(500).send({ error: "Could not fetch admin lists" });
+  }
+};
+
+export const handleChangeAdminRole = async (req, res) => {
+  const _id = req.params.id;
+  try {
+    let admin = await AdminModel.findOne({ _id });
+    console.log(admin);
+    // res.status(200).send({ message: `Deleted 1 record(s) permanently` });
   } catch (e) {
     res.status(500).send({ error: "Could not fetch admin lists" });
   }
