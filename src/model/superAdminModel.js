@@ -44,7 +44,7 @@ const schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// convert the user mogo object to a json object and delete some user field
+// convert the user mongo object to a json object and delete some user field
 schema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();

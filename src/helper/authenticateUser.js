@@ -17,7 +17,7 @@ export const authenticateUser = async (req, res, next) => {
         });
         if (!user) {
           return res.status(401).json({
-            message: "No User Found",
+            message: "Token Expired",
             code: 401,
           });
         }
