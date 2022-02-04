@@ -49,15 +49,16 @@ export const handleUserLogin = async (req, res) => {
 };
 
 export const handleUserLogout = async (req, res) => {
+  console.log("uvgybu");
   try {
     req.user.tokens = req.user.tokens.filter((token) => {
       return token.token !== req.token;
     });
-    res.status(200).send({ message: req.user.tokens });
     await req.user.save();
 
     res.status(200).send({ message: "Logged out successfully" });
   } catch (e) {
+    console.log(e);
     res.status(500).send();
   }
 };

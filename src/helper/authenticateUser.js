@@ -7,28 +7,29 @@ export const authenticateUser = async (req, res, next) => {
   try {
     const token = req.header("Authorization").replace("Bearer ", "");
 
+    console.log(token);
+
     // use the token to get the user id
     if (token) {
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRETE);
-        const user = await superAdminModel.findOne({
-          _id: decoded._id,
-          "tokens.token": token,
-        });
-        if (!user) {
-          return res.status(401).json({
-            message: "Token Expired",
-            code: 401,
-          });
-        }
-        req.token = token;
-        req.user = user;
+      console.log(process.env.JWT_SECRETE);
+      const decoded = jwt.decode(token, process.env.JWT_SECRETE);
 
-        next();
-      } catch (error) {
-        if (!token)
-          return res.status(498).json({ message: "Invalid Token", code: 498 });
+      const user = await superAdminModel.findOne({
+        _id: decoded._id,
+        "tokens.token": token,
+      });
+
+      if (!user) {
+        return res.status(401).json({
+          message: "Token Expired",
+          code: 401,
+        });
       }
+
+      req.token = token;
+      req.user = user;
+
+      next();
     }
   } catch (error) {
     console.log(error);
