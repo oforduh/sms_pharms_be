@@ -1,5 +1,4 @@
 import AdminModel from "../../model/admin.js";
-import roleModel from "../../model/roles.js";
 
 export const handleUserRegistration = async (req, res) => {
   const { email, password, phonenumber, roles } = req.body;
@@ -97,7 +96,7 @@ export const getAdminDetails = async (req, res) => {
     const _id = req.params.id;
     let admin = await AdminModel.findOne({ _id });
 
-    admin.populate("roles").execPopulate()
+    admin.populate("roles").execPopulate();
 
     if (!admin) return res.status(401).json({ message: "User Not Found" });
     res.status(200).send({ admin });

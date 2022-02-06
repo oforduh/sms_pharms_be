@@ -1,17 +1,14 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
-import superAdminModel from "../model/superAdminModel.js";
+import superAdminModel from "../model/userModel.js";
 
 export const authenticateUser = async (req, res, next) => {
   try {
     const token = req.header("Authorization").replace("Bearer ", "");
 
-    console.log(token);
-
     // use the token to get the user id
     if (token) {
-      console.log(process.env.JWT_SECRETE);
       const decoded = jwt.decode(token, process.env.JWT_SECRETE);
 
       const user = await superAdminModel.findOne({
@@ -34,7 +31,7 @@ export const authenticateUser = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     return res.status(401).json({
-      message: "No token, authorization denied  last error",
+      message: "No token, authorization denied",
       code: 401,
     });
   }

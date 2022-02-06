@@ -7,6 +7,26 @@ dotenv.config();
 
 const schema = new mongoose.Schema(
   {
+    fName: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
+    lName: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
+    age: {
+      type: Number,
+      validate(value) {
+        if (value < 0) {
+          throw new Error("age must be a positive number");
+        }
+      },
+    },
     email: {
       type: String,
       required: true,
@@ -25,12 +45,6 @@ const schema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-    },
-    roles: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "role",
-      required: true,
-      default: mongoose.Types.ObjectId("6182aa90a2a4a9a289671e9e"),
     },
     tokens: [
       {
@@ -75,7 +89,7 @@ schema.pre("save", async function (next) {
 
 // check if the credentials already exst in the database
 schema.statics.findByCredentials = async function (email, password) {
-  const user = await superAdminModel.findOne({ email });
+  const user = await userModel.findOne({ email });
   if (!user) {
     throw new Error("Incorrect Email or Password");
   }
@@ -86,5 +100,5 @@ schema.statics.findByCredentials = async function (email, password) {
   return user;
 };
 
-const superAdminModel = mongoose.model("superAdminUser", schema);
-export default superAdminModel;
+const userModel = mongoose.model("user", schema);
+export default userModel;

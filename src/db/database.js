@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 process.env.NODE_ENV !== "production"
-  ? (URL = "mongodb://127.0.0.1:27017/Authentication_system")
+  ? (URL = "mongodb://127.0.0.1:27017/sms_pharm")
   : (URL = process.env.MONGO_URI);
 
 const dbConnection = async () => {
