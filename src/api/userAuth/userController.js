@@ -220,20 +220,11 @@ export const change_password = async (request, res) => {
   }
 };
 
-export const handleCheckUserToken = async (req, res) => {
+export const handleCheckUserToken = (req, res) => {
   try {
-    await req.user.remove();
-    return responses.success({
-      res,
-      message: "This Account has been Deleted",
-      data: req.user,
-    });
+    res.status(200).json();
   } catch (e) {
-    return responses.bad_request({
-      res,
-      message: "Unable to delete user ",
-      e,
-    });
+    res.status(409).json({ message: `Request Timeout` });
   }
 };
 
