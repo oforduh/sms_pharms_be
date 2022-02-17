@@ -220,6 +220,23 @@ export const change_password = async (request, res) => {
   }
 };
 
+export const handleCheckUserToken = async (req, res) => {
+  try {
+    await req.user.remove();
+    return responses.success({
+      res,
+      message: "This Account has been Deleted",
+      data: req.user,
+    });
+  } catch (e) {
+    return responses.bad_request({
+      res,
+      message: "Unable to delete user ",
+      e,
+    });
+  }
+};
+
 // How to delete a user account from the database
 export const handleDeleteProfile = async (req, res) => {
   try {

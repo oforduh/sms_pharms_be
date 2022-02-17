@@ -81,7 +81,6 @@ schema.methods.toJSON = function () {
 
   delete userObject.password;
   delete userObject.tokens;
-  delete userObject.createdAt;
   delete userObject.updatedAt;
   return userObject;
 };
@@ -89,7 +88,11 @@ schema.methods.toJSON = function () {
 // This generate tokens for all new users
 schema.methods.generateAuthToken = async function () {
   const user = this;
-  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRETE);
+  const token = jwt.sign(
+    { _id: user._id.toString() },
+    process.env.JWT_SECRETE,
+    { expiresIn: "1d" }
+  );
   user.tokens = user.tokens.concat({ token });
   await user.save();
   return token;
