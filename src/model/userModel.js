@@ -46,6 +46,22 @@ const schema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    phone: {
+      type: String,
+      unique: true,
+      validate(value) {
+        let number = value;
+        if (number.chartAt(0) === "+") {
+          if (number.substring(0, 4) !== "+234") {
+            throw new Error("Invalid phone number");
+          }
+          number = number.substring(4);
+        }
+        if (!validator.isMobilePhone(number, ["en-NG"])) {
+          throw new Error("invalid phone number");
+        }
+      },
+    },
     tokens: [
       {
         token: {
