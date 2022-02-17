@@ -117,7 +117,7 @@ export const getLoggedUserDetails = async (req, res) => {
 export const updateUserProfile = async (req, res) => {
   try {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ["fName", "lName", "email", "age"];
+    const allowedUpdates = ["fName", "lName", "email", "age", "phone"];
     const isValidOperation = updates.every((update) => {
       return allowedUpdates.includes(update);
     });
@@ -169,6 +169,11 @@ export const updateUserProfile = async (req, res) => {
       if (e.errors.age) {
         return res.status(400).send({
           message: e.errors.age.message,
+        });
+      }
+      if (e.errors.phone) {
+        return res.status(400).send({
+          message: e.errors.phone.message,
         });
       }
     }
