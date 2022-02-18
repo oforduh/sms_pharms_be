@@ -18,10 +18,6 @@ const port = process.env.PORT || 7000;
 app.use("/api/auth", authRouter);
 app.use("/api/auth", adminRouter);
 
-app.get("/", (_, res) => {
-  res.json({ hello: "Hello" });
-});
-
 app.listen(port, () => {
   console.log(`App listening on port: ${port}`);
 });
