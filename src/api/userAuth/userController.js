@@ -14,6 +14,7 @@ export const handleUserRegistration = async (req, res) => {
       token: token,
     });
   } catch (e) {
+    res.status(500).json(e);
     if (e.name === "ValidationError") {
       if (e.errors.email) {
         return res.status(400).send({

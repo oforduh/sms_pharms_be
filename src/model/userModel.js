@@ -92,7 +92,7 @@ schema.methods.generateAuthToken = async function () {
   const token = jwt.sign(
     { _id: user._id.toString() },
     process.env.JWT_SECRETE,
-    { expiresIn: "60s" }
+    { expiresIn: 60 }
   );
   user.tokens = user.tokens.concat({ token });
   await user.save();
