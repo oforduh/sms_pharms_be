@@ -51,12 +51,13 @@ const schema = new mongoose.Schema(
       unique: true,
       validate(value) {
         let number = value;
-        if (number.chartAt(0) === "+") {
+        if (number.charAt(0) === "+") {
           if (number.substring(0, 4) !== "+234") {
             throw new Error("Invalid phone number");
           }
           number = number.substring(4);
         }
+        // check if the string is a Nigerian mobile phone number
         if (!validator.isMobilePhone(number, ["en-NG"])) {
           throw new Error("invalid phone number");
         }
@@ -101,6 +102,7 @@ schema.methods.generateAuthToken = async function () {
 // Hash the password before it saves to the database
 schema.pre("save", async function (next) {
   const user = this;
+  user.phone = user.phone.replace("+234", "0");
   if (user.isModified("password")) {
     user.password = await bcrypt.hash(user.password, 8);
   }

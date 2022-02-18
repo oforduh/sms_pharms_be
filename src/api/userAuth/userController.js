@@ -35,6 +35,11 @@ export const handleUserRegistration = async (req, res) => {
           message: e.errors.fName.message,
         });
       }
+      if (e.errors.phone) {
+        return res.status(400).send({
+          message: `Insert a valid phone number`,
+        });
+      }
     }
     if (e.code === 11000) {
       if (e.keyValue.email) {
