@@ -3,9 +3,9 @@ import responses from "../../helper/responses.js";
 import bcrypt from "bcryptjs";
 
 export const handleUserRegistration = async (req, res) => {
-  const { email, password, fName, lName, age } = req.body;
+  const { email, password, fName, lName, age, phone } = req.body;
   try {
-    const user = new userModel({ email, password, fName, lName, age });
+    const user = new userModel({ email, password, fName, lName, age, phone });
     await user.save();
     const token = await user.generateAuthToken();
     return responses.success({
