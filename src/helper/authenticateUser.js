@@ -15,6 +15,16 @@ export const authenticateUser = async (req, res, next) => {
     // decode the token using jwt.decode
     const decoded = jwt.decode(token, process.env.JWT_SECRETE);
 
+    let time = Date.now() - decoded.exp * 1000;
+    time = time / 60000;
+    console.log(time);
+    if (time >= 1440) {
+      return res.status(401).json({
+        message: "Token Expired",
+        code: 408,
+      });
+    }
+
     // find a user who owns the token
     const user = await userModel.findOne({
       _id: decoded._id,

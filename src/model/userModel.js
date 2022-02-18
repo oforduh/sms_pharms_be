@@ -92,7 +92,7 @@ schema.methods.generateAuthToken = async function () {
   const token = jwt.sign(
     { _id: user._id.toString() },
     process.env.JWT_SECRETE,
-    { expiresIn: 60 }
+    { expiresIn: 86400 }
   );
   user.tokens = user.tokens.concat({ token });
   await user.save();
@@ -102,7 +102,9 @@ schema.methods.generateAuthToken = async function () {
 // Hash the password before it saves to the database
 schema.pre("save", async function (next) {
   const user = this;
-  user.phone = user.phone.replace("+234", "0");
+  if (user.phone) {
+    user.phone = user.phone.replace("+234", "0");
+  }
   if (user.isModified("password")) {
     user.password = await bcrypt.hash(user.password, 8);
   }
