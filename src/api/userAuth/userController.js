@@ -118,18 +118,19 @@ export const getLoggedUserDetails = async (req, res) => {
 export const updateUserProfile = async (req, res) => {
   try {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ["fName", "lName", "email", "age", "phone"];
+    const allowedUpdates = ["fName", "lName", "age", "phone"];
+
+    // This array method returns true or false if the req.body matches the allowed updates
     const isValidOperation = updates.every((update) => {
       return allowedUpdates.includes(update);
     });
-
-    console.log(isValidOperation);
 
     if (!isValidOperation)
       return responses.bad_request({
         res,
         message: "Update Failed",
       });
+
     updates.forEach((update) => {
       req.user[update] = req.body[update];
     });
