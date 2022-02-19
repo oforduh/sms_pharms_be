@@ -32,4 +32,18 @@ const not_found = ({ res, message, error }) => {
   });
 };
 
-export default { success, bad_request, not_allowed, not_found };
+const request_timeout = ({ res, message, error }) => {
+  res.status(409).send({
+    status: false,
+    message,
+    error,
+  });
+};
+
+export default {
+  success,
+  bad_request,
+  not_allowed,
+  not_found,
+  request_timeout,
+};

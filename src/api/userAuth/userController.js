@@ -100,11 +100,6 @@ export const handleUserLogout = async (req, res) => {
 export const getLoggedUserDetails = async (req, res) => {
   try {
     const user = req.user;
-    if (!user)
-      return responses.not_found({
-        res,
-        message: "No existing user",
-      });
     return responses.success({
       res,
       data: user,
@@ -228,9 +223,15 @@ export const change_password = async (request, res) => {
 
 export const handleCheckUserToken = (req, res) => {
   try {
-    res.status(200).json();
+    responses.success({
+      res,
+    });
   } catch (e) {
-    res.status(409).json({ message: `Request Timeout` });
+    return responses.request_timeout({
+      res,
+      message: "Request Failed",
+      e,
+    });
   }
 };
 

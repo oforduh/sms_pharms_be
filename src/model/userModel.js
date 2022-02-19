@@ -75,7 +75,7 @@ const schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// convert the user mongo object to a json object and delete some user field
+// convert the user model mongo object to a json object which allows us to delete a field
 schema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
@@ -99,7 +99,7 @@ schema.methods.generateAuthToken = async function () {
   return token;
 };
 
-// Hash the password before it saves to the database
+// This functionality Hashes the password before it saves to the database
 schema.pre("save", async function (next) {
   const user = this;
   if (user.phone) {

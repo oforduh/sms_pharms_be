@@ -15,15 +15,9 @@ export const authenticateUser = async (req, res, next) => {
     // decode the token using jwt.decode
     const decoded = jwt.decode(token, process.env.JWT_SECRETE);
 
+    // convert the time to minutes (60s * 1k)
     let time = Date.now() - decoded.exp * 1000;
     time = time / 60000;
-    console.log(time);
-    if (time >= 1440) {
-      return res.status(401).json({
-        message: "Token Expired",
-        code: 408,
-      });
-    }
 
     // find a user who owns the token
     const user = await userModel.findOne({
@@ -34,8 +28,8 @@ export const authenticateUser = async (req, res, next) => {
     // throw error if there are no users
     if (!user) {
       return res.status(401).json({
-        message: "Unable to fetch logged in user",
-        code: 401,
+        message: "Token Expired",
+        code: 408,
       });
     }
 
@@ -43,12 +37,15 @@ export const authenticateUser = async (req, res, next) => {
     req.token = token;
     req.user = user;
 
+    // checks if the token has exxpired then it deletes the token from the user database
+    if (time >= 1440) {
+      req.user.tokens = req.user.tokens.filter((token) => {
+        return token.token !== req.token;
+      });
+      await req.user.save();
+    }
     next();
   } catch (error) {
-    req.user.tokens = req.user.tokens.filter((token) => {
-      return token.token !== req.token;
-    });
-    await req.user.save();
     console.log(error);
     return res.status(401).json({
       message: "No token, authorization denied",

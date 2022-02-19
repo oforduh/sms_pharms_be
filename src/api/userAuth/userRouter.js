@@ -9,6 +9,7 @@ import {
   updateUserProfile,
   change_password,
   handleDeleteProfile,
+  handleCheckUserToken,
 } from "./userController.js";
 import { authenticateUser } from "../../helper/authenticateUser.js";
 
@@ -19,5 +20,6 @@ router.get("/user/me", authenticateUser, getLoggedUserDetails);
 router.patch("/user/me/edit", authenticateUser, updateUserProfile);
 router.post("/changePassword", authenticateUser, change_password);
 router.delete("/user/me", authenticateUser, handleDeleteProfile);
+router.get("/user/token_checker", authenticateUser, handleCheckUserToken);
 
 export default router;
