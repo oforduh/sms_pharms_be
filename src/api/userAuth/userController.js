@@ -222,20 +222,6 @@ export const change_password = async (request, res) => {
   }
 };
 
-export const handleCheckUserToken = (req, res) => {
-  try {
-    responses.success({
-      res,
-    });
-  } catch (e) {
-    return responses.request_timeout({
-      res,
-      message: "Request Failed",
-      e,
-    });
-  }
-};
-
 // How to delete a user account from the database
 export const handleDeleteProfile = async (req, res) => {
   try {
@@ -249,6 +235,22 @@ export const handleDeleteProfile = async (req, res) => {
     return responses.bad_request({
       res,
       message: "Unable to delete user ",
+      e,
+    });
+  }
+};
+
+// A functions that check if the token has expired
+export const handleCheckUserToken = (req, res) => {
+  try {
+    responses.success({
+      res,
+      data: req.tokenExpiryDate,
+    });
+  } catch (e) {
+    return responses.request_timeout({
+      res,
+      message: "Request Failed",
       e,
     });
   }

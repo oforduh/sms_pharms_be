@@ -36,6 +36,7 @@ export const authenticateUser = async (req, res, next) => {
     // add the token and user to the request object
     req.token = token;
     req.user = user;
+    req.tokenExpiryDate = time;
 
     // checks if the token has exxpired then it deletes the token from the user database
     if (time >= 1440) {
