@@ -206,7 +206,7 @@ export const change_password = async (request, res) => {
     if (same_password)
       return responses.bad_request({
         res,
-        message: "New Password cannot be the same as the old password",
+        message: "New password cannot be the same as the old password",
       });
 
     user.password = new_password;
