@@ -63,6 +63,9 @@ const schema = new mongoose.Schema(
         }
       },
     },
+    avatar: {
+      type: String,
+    },
     tokens: [
       {
         token: {

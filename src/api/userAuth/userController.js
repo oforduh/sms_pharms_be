@@ -118,7 +118,7 @@ export const getLoggedUserDetails = async (req, res) => {
 export const updateUserProfile = async (req, res) => {
   try {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ["fName", "lName", "age", "phone"];
+    const allowedUpdates = ["fName", "lName", "age", "phone", "avatar"];
 
     // This array method returns true or false if the req.body matches the allowed updates
     const isValidOperation = updates.every((update) => {
