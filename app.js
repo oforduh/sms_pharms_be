@@ -5,7 +5,8 @@ import { dbConnection } from "./src/db/database.js";
 dbConnection();
 
 import authRouter from "./src/api/userAuth/userRouter.js";
-import adminRouter from "./src/api/adminAuth/adminAuth_router.js";
+import patientRouter from "./src/api/patientAuth/patientRouter.js";
+import branchRouter from "./src/api/branchAuth/branchRouter.js";
 
 const app = express();
 app.use(cors());
@@ -16,7 +17,8 @@ const port = process.env.PORT || 7000;
 
 // routes
 app.use("/api/auth", authRouter);
-app.use("/api/auth", adminRouter);
+app.use("/api/auth", patientRouter);
+app.use("/api/auth", branchRouter);
 
 app.listen(port, () => {
   console.log(`App listening on port: ${port}`);

@@ -14,7 +14,6 @@ export const handleUserRegistration = async (req, res) => {
       token: token,
     });
   } catch (e) {
-    res.status(500).json(e);
     if (e.name === "ValidationError") {
       if (e.errors.email) {
         return res.status(400).send({
@@ -46,6 +45,11 @@ export const handleUserRegistration = async (req, res) => {
       if (e.keyValue.email) {
         return res.status(400).send({
           message: "Email already exist",
+        });
+      }
+      if (e.keyValue.phone) {
+        return res.status(400).send({
+          message: "Phone number already exist",
         });
       }
     }
@@ -181,7 +185,7 @@ export const updateUserProfile = async (req, res) => {
     }
     return responses.bad_request({
       res,
-      message: "Update Failed",
+      message: "Fail to Update Profile",
       e,
     });
   }
@@ -240,7 +244,7 @@ export const handleDeleteProfile = async (req, res) => {
   }
 };
 
-// A functions that check if the token has expired
+// An api functions that check if the token has expired
 export const handleCheckUserToken = (req, res) => {
   try {
     responses.success({
@@ -255,3 +259,36 @@ export const handleCheckUserToken = (req, res) => {
     });
   }
 };
+
+// An api that deletes a user profile picture
+export const handleDeleteUserAvatar = async (req, res) => {
+  try {
+    if (!req.user.avatar) return;
+    req.user.avatar = undefined;
+    await req.user.save();
+    responses.success({
+      res,
+      message: `user avatar has been deleted`,
+    });
+  } catch (e) {
+    return responses.request_timeout({
+      res,
+      message: "Failed to remove avatar",
+      e,
+    });
+  }
+};
+
+// A functions that check deletes a user profile picture
+// export const handleClearOtherSession = async (req, res) => {
+//   try {
+//     req.user.tokens = [];
+//     await req.user.save();
+//     responses.success({
+//       res,
+//       message: `user avatar has been deleted`,
+//     });
+//   } catch (e) {
+//     res.status(500).send();
+//   }
+// };
