@@ -11,6 +11,7 @@ import {
   handleDeleteProfile,
   handleCheckUserToken,
   handleDeleteUserAvatar,
+  handleTerminateOtherSession,
 } from "./userController.js";
 import { authenticateUser } from "../../helper/authenticateUser.js";
 
@@ -23,5 +24,6 @@ router.post("/changePassword", authenticateUser, change_password);
 router.delete("/user/me", authenticateUser, handleDeleteProfile);
 router.get("/user/token_checker", authenticateUser, handleCheckUserToken);
 router.delete("/user/me/avatar", authenticateUser, handleDeleteUserAvatar);
+router.get("/user/me/session", authenticateUser, handleTerminateOtherSession);
 
 export default router;

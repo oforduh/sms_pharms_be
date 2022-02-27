@@ -263,12 +263,17 @@ export const handleCheckUserToken = (req, res) => {
 // An api that deletes a user profile picture
 export const handleDeleteUserAvatar = async (req, res) => {
   try {
-    if (!req.user.avatar) return;
+    if (!req.user.avatar)
+      return responses.bad_request({
+        res,
+        message: `There is no avatar to remove`,
+      });
     req.user.avatar = undefined;
     await req.user.save();
     responses.success({
       res,
       message: `user avatar has been deleted`,
+      data: req.user,
     });
   } catch (e) {
     return responses.request_timeout({
@@ -280,15 +285,20 @@ export const handleDeleteUserAvatar = async (req, res) => {
 };
 
 // A functions that check deletes a user profile picture
-// export const handleClearOtherSession = async (req, res) => {
-//   try {
-//     req.user.tokens = [];
-//     await req.user.save();
-//     responses.success({
-//       res,
-//       message: `user avatar has been deleted`,
-//     });
-//   } catch (e) {
-//     res.status(500).send();
-//   }
-// };
+export const handleTerminateOtherSession = async (req, res) => {
+  try {
+    // req.user.tokens = [];
+    req.user.tokens = req.user.tokens.filter((item) => {
+      if (item.token === req.token) {
+        return item.token === req.token;
+      }
+    });
+    await req.user.save();
+    responses.success({
+      res,
+      message: `You have terminated all session from other connected devices`,
+    });
+  } catch (e) {
+    res.status(500).send(e);
+  }
+};
