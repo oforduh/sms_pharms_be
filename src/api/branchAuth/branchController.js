@@ -1,4 +1,7 @@
 import branchModel from "../../model/branchModel.js";
+import diseaseModel from "../../model/diseaseModel.js";
+import activityModel from "../../model/activityModel.js";
+
 import responses from "../../helper/responses.js";
 import { handleError } from "../../helper/errorHandler.js";
 
@@ -15,6 +18,11 @@ export const handleBranchRegistration = async (req, res) => {
     });
     const branch = new branchModel(obj);
     await branch.save();
+    const activity = new activityModel({
+      type: `new branch has Created`,
+      user: req.user._id,
+    });
+    await activity.save();
     return responses.success({
       res,
       data: branch,
@@ -114,14 +122,17 @@ export const softDeleteBranchData = async (req, res) => {
 // permanent delete a branch profile
 export const deleteBranchData = async (req, res) => {
   const branchId = req.params.branchId;
-  console.log(branchId);
   try {
     const branch = await branchModel.findOne({ _id: branchId });
+
     console.log(branch);
     if (!branch)
       return responses.not_found({
         message: `branch not found`,
       });
+
+    // Delete branch associated with it
+    await diseaseModel.deleteMany({ branch: branchId });
 
     await branch.remove();
     return responses.success({

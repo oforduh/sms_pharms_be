@@ -9,6 +9,9 @@ import {
   deletePatientData,
   restoreThrashedPatientData,
   fetchThrashedPatientData,
+  deleteSelectedPatientData,
+  restoreSelectedPatientData,
+  emptyThrashPatientData,
 } from "./patientController.js";
 import { authenticateUser } from "../../helper/authenticateUser.js";
 
@@ -31,5 +34,21 @@ router.get(
   restoreThrashedPatientData
 );
 router.get("/patient/thrash/", authenticateUser, fetchThrashedPatientData);
+router.delete(
+  "/select/patient/delete",
+  authenticateUser,
+  deleteSelectedPatientData
+);
+router.get(
+  "/select/patient/restore",
+  authenticateUser,
+  restoreSelectedPatientData
+);
+
+router.delete(
+  "/patient/deleteAll/thrash",
+  authenticateUser,
+  emptyThrashPatientData
+);
 
 export default router;

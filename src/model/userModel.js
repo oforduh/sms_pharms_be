@@ -78,6 +78,12 @@ const schema = new mongoose.Schema(
   { timestamps: true }
 );
 
+schema.virtual("userActivities", {
+  ref: "activity",
+  localField: "_id",
+  foreignField: "user",
+});
+
 // convert the user model mongo object to a json object which allows us to delete a field
 schema.methods.toJSON = function () {
   const user = this;

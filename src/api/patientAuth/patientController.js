@@ -96,7 +96,7 @@ export const softDeletePatientData = async (req, res) => {
     const patient = await patientModel.findOne({ _id: patientId });
     if (!patient)
       return responses.not_found({
-        message: `Patient not found`,
+        message: `patient not found`,
       });
     patient.deletedAt = Date.now();
     await patient.save();
@@ -106,10 +106,7 @@ export const softDeletePatientData = async (req, res) => {
       message: `The user with Id of ${patientId} has been Moved to thrash`,
     });
   } catch (error) {
-    return responses.bad_request({
-      res,
-      message: `Failed to thrash patient data`,
-    });
+    return responses.bad_request({ res, message: `Failed to restore data` });
   }
 };
 
@@ -144,7 +141,7 @@ export const restoreThrashedPatientData = async (req, res) => {
       return responses.not_found({
         message: `Patient not found`,
       });
-    patient.deletedAt = null;
+    patient.deletedAt = Date.now();
     await patient.save();
     // await patient.remove(); permanaent delete
     return responses.success({
@@ -170,6 +167,64 @@ export const deletePatientData = async (req, res) => {
     return responses.success({
       res,
       message: `The user with Id of ${patientId} has been deleted`,
+    });
+  } catch (error) {
+    return responses.bad_request({ res, message: `Failed to delete data` });
+  }
+};
+
+// permanently delete Selected patientes
+export const deleteSelectedPatientData = async (req, res) => {
+  try {
+    const objId = req.body.id;
+    for (let i = 0; i < objId.length; i++) {
+      let patient = await patientModel.findOne({ _id: objId[i] });
+      await patient.remove();
+    }
+
+    return responses.success({
+      res,
+      message: `Selected Patient data has been deleted`,
+    });
+  } catch (error) {
+    return responses.bad_request({
+      res,
+      message: `Failed to delete patient data`,
+    });
+  }
+};
+
+export const restoreSelectedPatientData = async (req, res) => {
+  try {
+    const objId = req.body.id;
+    for (let i = 0; i < objId.length; i++) {
+      let patient = await patientModel.findOne({ _id: objId[i] });
+      patient.deletedAt = null;
+      await patient.save();
+    }
+    return responses.success({
+      res,
+      message: `All patientes has been restored`,
+    });
+  } catch (error) {
+    return responses.bad_request({ res, message: `Failed to restore data` });
+  }
+};
+
+// Empty the trash can
+export const emptyThrashPatientData = async (req, res) => {
+  try {
+    const patient = await patientModel.deleteMany({ deletedAt: { $ne: null } });
+
+    if (patient.deletedCount < 1)
+      return responses.success({
+        res,
+        message: `There are no thrash to delete`,
+      });
+
+    return responses.success({
+      res,
+      message: `All patient has successfully been deleted`,
     });
   } catch (error) {
     return responses.bad_request({ res, message: `Failed to delete data` });

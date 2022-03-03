@@ -11,6 +11,18 @@ const schema = new mongoose.Schema(
       trim: true,
       unique: true,
     },
+    // soft delete
+    deletedAt: {
+      type: String,
+      default: null,
+    },
+
+    // branch and disease relationship
+    branch: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "branch",
+    },
   },
   { timestamps: true }
 );
