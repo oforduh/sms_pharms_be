@@ -1,10 +1,20 @@
-const success = ({ res, message, entity, data, token }) => {
+const success = ({
+  res,
+  message,
+  entity,
+  data,
+  token,
+  totalPages,
+  currentPage,
+}) => {
   res.status(200).send({
     status: true,
     message,
     entity,
     data,
     token,
+    totalPages,
+    currentPage,
   });
 };
 

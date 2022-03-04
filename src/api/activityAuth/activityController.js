@@ -3,15 +3,20 @@ import activityModel from "../../model/activityModel.js";
 
 // fetch all activity data
 export const fetchActivityData = async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
   try {
     const activities = await activityModel
       .find({ deletedAt: null })
-      .skip(parseInt(req.query.skip))
-      .limit(parseInt(req.query.limit));
-    if (!activities)
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+    if (activities.length < 1)
       return responses.not_found({
         message: `activities not found`,
       });
+
+    // get total documents in the Posts collection
+    const count = await activityModel.countDocuments();
 
     const allActivities = [];
 
@@ -27,6 +32,8 @@ export const fetchActivityData = async (req, res) => {
       res,
       message: `There are ${allActivities.length} Records`,
       data: allActivities.reverse(),
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
     });
     x;
   } catch (error) {
