@@ -112,6 +112,11 @@ export const softDeleteBranchData = async (req, res) => {
     branch.deletedAt = Date.now();
     await branch.save();
     // await branch.remove(); permanaent delete
+    const activity = new activityModel({
+      type: `branch was moved to thrash`,
+      user: req.user._id,
+    });
+    await activity.save();
     return responses.success({
       res,
       message: `The user with Id of ${branchId} has been Moved to thrash`,
@@ -140,6 +145,11 @@ export const deleteBranchData = async (req, res) => {
     await diseaseModel.deleteMany({ branch: branchId });
 
     await branch.remove();
+    const activity = new activityModel({
+      type: `branch was deleted`,
+      user: req.user._id,
+    });
+    await activity.save();
     return responses.success({
       res,
       message: `The user with Id of ${branchId} has been deleted`,
@@ -161,6 +171,11 @@ export const restoreThrashedBranchData = async (req, res) => {
     branch.deletedAt = null;
     await branch.save();
     // await branch.remove(); permanaent delete
+    const activity = new activityModel({
+      type: `branch was restored from thrash`,
+      user: req.user._id,
+    });
+    await activity.save();
     return responses.success({
       res,
       message: `The user with Id of ${branchId} has been Restored`,
@@ -200,7 +215,11 @@ export const deleteSelectedBranchData = async (req, res) => {
       let branch = await branchModel.findOne({ _id: objId[i] });
       await branch.remove();
     }
-
+    const activity = new activityModel({
+      type: `All selected branch was deleted`,
+      user: req.user._id,
+    });
+    await activity.save();
     return responses.success({
       res,
       message: `All branches has been deleted`,
@@ -219,6 +238,11 @@ export const restoreSelectedBranchData = async (req, res) => {
       branch.deletedAt = null;
       await branch.save();
     }
+    const activity = new activityModel({
+      type: `All selected branch was restored`,
+      user: req.user._id,
+    });
+    await activity.save();
     return responses.success({
       res,
       message: `All branches has been restored`,
@@ -238,7 +262,11 @@ export const emptyThrashBranchData = async (req, res) => {
         res,
         message: `There are no thrash to delete`,
       });
-
+    const activity = new activityModel({
+      type: `All branch in thrash has been deleted`,
+      user: req.user._id,
+    });
+    await activity.save();
     return responses.success({
       res,
       message: `All branch has successfully been deleted`,
