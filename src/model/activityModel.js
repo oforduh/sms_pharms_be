@@ -11,7 +11,7 @@ const schema = new mongoose.Schema(
       required: true,
     },
 
-    // branch and activity relationship
+    // user and activity relationship
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

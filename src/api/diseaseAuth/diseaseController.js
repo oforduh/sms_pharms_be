@@ -6,8 +6,8 @@ import { handleError } from "../../helper/errorHandler.js";
 export const handleDiseaseRegistration = async (req, res) => {
   try {
     const { branch } = req.body;
-    const xBranch = await branchModel({ branch });
-    if (!xBranch)
+    const checkBranch = await branchModel({ branch });
+    if (!checkBranch)
       return responses.not_found({
         res,
         message: "Branch does not exist",
@@ -41,10 +41,16 @@ export const fetchDiseaseData = async (req, res) => {
       return responses.not_found({
         message: `diseases not found`,
       });
+    const allDiseases = [];
+
+    for (let i = 0; i < diseases.length; i++) {
+      let data = await diseases[i].populate("branch", ["branch"]);
+      allDiseases.push(data);
+    }
     return responses.success({
       res,
-      message: `There are ${diseases.length} Records`,
-      data: diseases,
+      message: `There are ${allDiseases.length} Records`,
+      data: allDiseases.reverse(),
     });
   } catch (error) {
     return responses.bad_request({ res, message: `Failed to fetch records` });

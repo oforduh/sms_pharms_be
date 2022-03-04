@@ -22,5 +22,10 @@ const schema = new mongoose.Schema(
   { timestamps: true }
 );
 
+schema.virtual("branchDiseases", {
+  ref: "disease",
+  localField: "_id",
+  foreignField: "branch",
+});
 const branchModel = mongoose.model("branch", schema);
 export default branchModel;
