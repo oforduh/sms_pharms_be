@@ -57,7 +57,7 @@ export const updateBranchData = async (req, res) => {
     if (!branch)
       return responses.not_found({
         res,
-        message: `There is no user associated with this Id`,
+        message: `There is no branch associated with this Id`,
       });
 
     //Update the branch object
@@ -67,6 +67,11 @@ export const updateBranchData = async (req, res) => {
       }
     });
     await branch.save();
+    const activity = new activityModel({
+      type: `branch has been edited`,
+      user: req.user._id,
+    });
+    await activity.save();
     return responses.success({
       res,
       data: branch,

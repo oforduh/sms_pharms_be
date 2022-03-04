@@ -18,10 +18,8 @@ export const fetchActivityData = async (req, res) => {
         "lName",
         "createdAt",
       ]);
-      console.log(data);
       allActivities.push(data);
     }
-    console.log(allActivities);
     return responses.success({
       res,
       message: `There are ${allActivities.length} Records`,
