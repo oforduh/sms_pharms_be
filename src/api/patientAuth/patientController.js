@@ -89,16 +89,29 @@ export const updatePatientData = async (req, res) => {
 
 // fetch all patient data
 export const fetchPatientData = async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
   try {
-    const patients = await patientModel.find({ deletedAt: null });
+    const patients = await patientModel
+      .find({ deletedAt: null })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+    // if patients is an empty array
     if (patients.length < 1)
       return responses.success({
         message: `No records found`,
       });
+
+    // get total documents in the activity collection
+    const count = await patientModel.countDocuments();
+
     return responses.success({
       res,
       message: `There are ${patients.length} Records`,
-      data: patients,
+      data: patients.reverse(),
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
     });
   } catch (error) {
     return responses.bad_request({ res, message: `Failed to fetch records` });
@@ -136,20 +149,32 @@ export const softDeletePatientData = async (req, res) => {
 
 // fetch all thrashed patient data
 export const fetchThrashedPatientData = async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
   try {
     // https://masteringjs.io/tutorials/mongoose/query-string
-    const patients = await patientModel.find({
-      deletedAt: { $ne: null },
-    });
+    const patients = await patientModel
+      .find({
+        deletedAt: { $ne: null },
+      })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
     if (patients.length < 1)
       return responses.success({
         message: `Patients not found`,
       });
 
+    const count = await patientModel.countDocuments({
+      deletedAt: { $ne: null },
+    });
+
     return responses.success({
       res,
       message: `There are ${patients.length} thrashed records`,
-      data: patients,
+      data: patients.reverse(),
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
     });
   } catch (error) {
     console.log(error);

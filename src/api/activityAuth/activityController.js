@@ -17,7 +17,7 @@ export const fetchActivityData = async (req, res) => {
         message: `activities not found`,
       });
 
-    // get total documents in the Posts collection
+    // get total documents in the activity collection
     const count = await activityModel.countDocuments();
 
     const allActivities = [];

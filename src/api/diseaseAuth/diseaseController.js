@@ -2,6 +2,7 @@ import diseaseModel from "../../model/diseaseModel.js";
 import responses from "../../helper/responses.js";
 import branchModel from "../../model/branchModel.js";
 import { handleError } from "../../helper/errorHandler.js";
+import activityModel from "../../model/activityModel.js";
 
 export const handleDiseaseRegistration = async (req, res) => {
   try {
@@ -23,6 +24,13 @@ export const handleDiseaseRegistration = async (req, res) => {
     });
     const disease = new diseaseModel(obj);
     await disease.save();
+
+    const activity = new activityModel({
+      type: `Disease has been created`,
+      user: req.user._id,
+    });
+    await activity.save();
+
     return responses.success({
       res,
       data: disease,
@@ -35,12 +43,21 @@ export const handleDiseaseRegistration = async (req, res) => {
 
 // fetch all branch data
 export const fetchDiseaseData = async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
   try {
-    const diseases = await diseaseModel.find({ deletedAt: null });
-    if (!diseases)
+    const diseases = await diseaseModel
+      .find({ deletedAt: null })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+    if (diseases.length < 1)
       return responses.not_found({
-        message: `diseases not found`,
+        message: `diseases record not found`,
       });
+
+    // get total documents in the activity collection
+    const count = await diseaseModel.countDocuments();
     const allDiseases = [];
 
     for (let i = 0; i < diseases.length; i++) {
@@ -51,6 +68,8 @@ export const fetchDiseaseData = async (req, res) => {
       res,
       message: `There are ${allDiseases.length} Records`,
       data: allDiseases.reverse(),
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
     });
   } catch (error) {
     return responses.bad_request({ res, message: `Failed to fetch records` });
