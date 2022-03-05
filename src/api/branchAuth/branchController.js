@@ -38,7 +38,7 @@ export const handleBranchRegistration = async (req, res) => {
   }
 };
 
-// Update a branch profile
+// Update a branch data
 export const updateBranchData = async (req, res) => {
   const branchId = req.params.branchId;
   try {
@@ -105,7 +105,7 @@ export const fetchBranchData = async (req, res) => {
   }
 };
 
-// soft delete(thrash) a branch profile
+// soft delete(thrash) a branch data
 export const softDeleteBranchData = async (req, res) => {
   const branchId = req.params.branchId;
   try {

@@ -41,7 +41,60 @@ export const handleDiseaseRegistration = async (req, res) => {
   }
 };
 
-// fetch all branch data
+// Update a disease data
+export const updateDiseaseData = async (req, res) => {
+  const diseaseId = req.params.diseaseId;
+  try {
+    const updates = Object.keys(req.body);
+    const values = Object.values(req.body);
+    const allowedUpdates = ["disease"];
+
+    // This array method returns true or false if the req.body matches the allowed updates
+    const isValidOperation = updates.every((update) => {
+      return allowedUpdates.includes(update);
+    });
+
+    // Throw an error message if it turns out to be false
+    if (!isValidOperation)
+      return responses.bad_request({
+        res,
+        message: "Update Failed",
+      });
+
+    // check if the disease exists in the database
+    const disease = await diseaseModel.findOne({ _id: diseaseId });
+    if (!disease)
+      return responses.not_found({
+        res,
+        message: `There is no disease associated with this Id`,
+      });
+
+    //Update the disease object
+    values.map((item, idx) => {
+      if (item) {
+        disease[updates[idx]] = item;
+      }
+    });
+    await disease.save();
+
+    // log to activity table
+    const activity = new activityModel({
+      type: `disease has been edited`,
+      user: req.user._id,
+    });
+    await activity.save();
+
+    return responses.success({
+      res,
+      data: disease,
+    });
+  } catch (error) {
+    const msg = `Could not update disease data`;
+    handleError({ error, responses, res, msg });
+  }
+};
+
+// fetch all disease data
 export const fetchDiseaseData = async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
   try {

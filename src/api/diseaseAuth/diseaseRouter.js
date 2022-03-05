@@ -4,11 +4,12 @@ const router = new express.Router();
 import {
   handleDiseaseRegistration,
   fetchDiseaseData,
+  updateDiseaseData,
 } from "./diseaseController.js";
 import { authenticateUser } from "../../helper/authenticateUser.js";
 
 router.post("/disease/register", authenticateUser, handleDiseaseRegistration);
-// router.patch("/Disease/:DiseaseId", authenticateUser, updateDiseaseData);
+router.patch("/disease/:diseaseId", authenticateUser, updateDiseaseData);
 router.get("/disease", authenticateUser, fetchDiseaseData);
 
 // router.delete("/Disease/delete/:DiseaseId", authenticateUser, deleteDiseaseData);
