@@ -10,6 +10,8 @@ export const fetchActivityData = async (req, res) => {
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .exec();
+
+    // if activities is an empty array
     if (activities.length < 1)
       return responses.not_found({
         message: `activities not found`,

@@ -16,13 +16,18 @@ export const handleBranchRegistration = async (req, res) => {
         obj[keys[index]] = item;
       }
     });
+
+    // create new branch
     const branch = new branchModel(obj);
     await branch.save();
+
+    // add to the activity logs
     const activity = new activityModel({
       type: `new branch has Created`,
       user: req.user._id,
     });
     await activity.save();
+
     return responses.success({
       res,
       data: branch,

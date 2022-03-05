@@ -1,6 +1,7 @@
 import patientModel from "../../model/patientModel.js";
 import responses from "../../helper/responses.js";
 import { handleError } from "../../helper/errorHandler.js";
+import activityModel from "../../model/activityModel.js";
 
 // Create a patient profile
 export const handlePatientRegistration = async (req, res) => {
@@ -16,6 +17,14 @@ export const handlePatientRegistration = async (req, res) => {
     });
     const patient = new patientModel(obj);
     await patient.save();
+
+    // add to the activity logs
+    const activity = new activityModel({
+      type: `New patient has registered`,
+      user: req.user._id,
+    });
+    await activity.save();
+
     return responses.success({
       res,
       data: patient,
@@ -61,6 +70,13 @@ export const updatePatientData = async (req, res) => {
       }
     });
     await patient.save();
+
+    // add to the activity logs
+    const activity = new activityModel({
+      type: `Patient profile was updated`,
+      user: req.user._id,
+    });
+    await activity.save();
     return responses.success({
       res,
       data: patient,
@@ -75,9 +91,9 @@ export const updatePatientData = async (req, res) => {
 export const fetchPatientData = async (req, res) => {
   try {
     const patients = await patientModel.find({ deletedAt: null });
-    if (!patients)
-      return responses.not_found({
-        message: `Patients not found`,
+    if (patients.length < 1)
+      return responses.success({
+        message: `No records found`,
       });
     return responses.success({
       res,
@@ -101,6 +117,14 @@ export const softDeletePatientData = async (req, res) => {
     patient.deletedAt = Date.now();
     await patient.save();
     // await patient.remove(); permanaent delete
+
+    // add to the activity logs
+    const activity = new activityModel({
+      type: `Patient data was moved to registered`,
+      user: req.user._id,
+    });
+    await activity.save();
+
     return responses.success({
       res,
       message: `The user with Id of ${patientId} has been Moved to thrash`,
@@ -117,10 +141,11 @@ export const fetchThrashedPatientData = async (req, res) => {
     const patients = await patientModel.find({
       deletedAt: { $ne: null },
     });
-    if (!patients)
-      return responses.not_found({
+    if (patients.length < 1)
+      return responses.success({
         message: `Patients not found`,
       });
+
     return responses.success({
       res,
       message: `There are ${patients.length} thrashed records`,
@@ -144,6 +169,14 @@ export const restoreThrashedPatientData = async (req, res) => {
     patient.deletedAt = Date.now();
     await patient.save();
     // await patient.remove(); permanaent delete
+
+    // add to the activity logs
+    const activity = new activityModel({
+      type: `Patient data was restored`,
+      user: req.user._id,
+    });
+    await activity.save();
+
     return responses.success({
       res,
       message: `The user with Id of ${patientId} has been Restored`,
@@ -164,6 +197,14 @@ export const deletePatientData = async (req, res) => {
       });
 
     await patient.remove();
+
+    // add to the activity logs
+    const activity = new activityModel({
+      type: `Patient data was permanently deleted`,
+      user: req.user._id,
+    });
+    await activity.save();
+
     return responses.success({
       res,
       message: `The user with Id of ${patientId} has been deleted`,
@@ -173,7 +214,7 @@ export const deletePatientData = async (req, res) => {
   }
 };
 
-// permanently delete Selected patientes
+// permanently delete Selected patient data
 export const deleteSelectedPatientData = async (req, res) => {
   try {
     const objId = req.body.id;
@@ -181,6 +222,13 @@ export const deleteSelectedPatientData = async (req, res) => {
       let patient = await patientModel.findOne({ _id: objId[i] });
       await patient.remove();
     }
+
+    // add to the activity logs
+    const activity = new activityModel({
+      type: `Thrashed patient data has been restored`,
+      user: req.user._id,
+    });
+    await activity.save();
 
     return responses.success({
       res,
@@ -202,6 +250,13 @@ export const restoreSelectedPatientData = async (req, res) => {
       patient.deletedAt = null;
       await patient.save();
     }
+    // add to the activity logs
+    const activity = new activityModel({
+      type: `Patient data was restored`,
+      user: req.user._id,
+    });
+    await activity.save();
+
     return responses.success({
       res,
       message: `All patientes has been restored`,
@@ -221,6 +276,12 @@ export const emptyThrashPatientData = async (req, res) => {
         res,
         message: `There are no thrash to delete`,
       });
+
+    const activity = new activityModel({
+      type: `all Thrash data has been permanently deleted`,
+      user: req.user._id,
+    });
+    await activity.save();
 
     return responses.success({
       res,
