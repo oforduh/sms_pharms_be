@@ -7,6 +7,7 @@ export const fetchActivityData = async (req, res) => {
   try {
     const activities = await activityModel
       .find({ deletedAt: null })
+      .sort({ createdAt: "desc" })
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .exec();
@@ -33,7 +34,7 @@ export const fetchActivityData = async (req, res) => {
     return responses.success({
       res,
       message: `There are ${allActivities.length} Records`,
-      data: allActivities.reverse(),
+      data: allActivities,
       totalPages: Math.ceil(count / limit),
       currentPage: page,
     });

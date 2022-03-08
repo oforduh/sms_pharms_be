@@ -83,6 +83,7 @@ export const updateDiseaseData = async (req, res) => {
       user: req.user._id,
     });
     await activity.save();
+    console.log(activity);
 
     return responses.success({
       res,
