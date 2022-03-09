@@ -89,16 +89,29 @@ export const updateBranchData = async (req, res) => {
 
 // fetch all branch data
 export const fetchBranchData = async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
   try {
-    const branchs = await branchModel.find({ deletedAt: null });
-    if (!branchs)
+    const branchs = await branchModel
+      .find({ deletedAt: null })
+      .sort({ createdAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+    if (branchs < 1)
       return responses.not_found({
-        message: `branchs not found`,
+        message: `activities not found`,
       });
+
+    // get total documents in the activity collection
+    const count = await branchModel.countDocuments();
+
     return responses.success({
       res,
       message: `There are ${branchs.length} Records`,
       data: branchs,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
     });
   } catch (error) {
     return responses.bad_request({ res, message: `Failed to fetch records` });
