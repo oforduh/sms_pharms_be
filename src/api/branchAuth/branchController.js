@@ -89,7 +89,8 @@ export const updateBranchData = async (req, res) => {
 
 // fetch all branch data
 export const fetchBranchData = async (req, res) => {
-  const { page = 1, limit = 10 } = req.query;
+  let { page, limit = 10 } = req.query;
+  if (!page) page = 1;
   try {
     const branchs = await branchModel
       .find({ deletedAt: null })
