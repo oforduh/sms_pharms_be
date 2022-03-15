@@ -3,7 +3,8 @@ import activityModel from "../../model/activityModel.js";
 
 // fetch all activity data
 export const fetchActivityData = async (req, res) => {
-  const { page = 1, limit = 10 } = req.query;
+  const { page, limit = 10 } = req.query;
+  if (!page) page = 1;
   try {
     const activities = await activityModel
       .find({ deletedAt: null })
