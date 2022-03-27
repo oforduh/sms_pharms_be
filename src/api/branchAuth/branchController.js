@@ -89,12 +89,14 @@ export const updateBranchData = async (req, res) => {
 
 // fetch all branch data
 export const fetchBranchData = async (req, res) => {
-  let { page, limit = 10 } = req.query;
+  let { page, limit = 10, sort } = req.query;
   if (!page) page = 1;
+  if (!sort) sort = -1;
   try {
     const branchs = await branchModel
       .find({ deletedAt: null })
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: sort })
+      // .sort({ createdAt: -1 })
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .exec();
@@ -130,7 +132,7 @@ export const softDeleteBranchData = async (req, res) => {
       });
     branch.deletedAt = Date.now();
     await branch.save();
-    // await branch.remove(); permanaent delete
+    // await branch.remove(); permanent delete
     const activity = new activityModel({
       type: `branch was moved to thrash`,
       user: req.user._id,
@@ -189,7 +191,7 @@ export const restoreThrashedBranchData = async (req, res) => {
       });
     branch.deletedAt = null;
     await branch.save();
-    // await branch.remove(); permanaent delete
+    // await branch.remove(); permanent delete
     const activity = new activityModel({
       type: `branch was restored from thrash`,
       user: req.user._id,

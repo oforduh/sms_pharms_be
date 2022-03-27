@@ -2,20 +2,20 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
-process.env.NODE_ENV !== "production"
-  ? (URL = "mongodb://127.0.0.1:27017/sms_pharm")
-  : (URL = process.env.MONGO_URI);
+// process.env.NODE_ENV !== "production"
+//   ? (URL = "mongodb://127.0.0.1:27017/sms_pharm")
+//   : (URL = process.env.MONGO_URI);
 
 const dbConnection = async () => {
   await mongoose
-    // .connect(process.env.MONGO_URI, {
-    //   useNewUrlParser: true,
-    //   useUnifiedTopology: true,
-    // })
-    .connect(URL, {
+    .connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
+    // .connect(URL, {
+    //   useNewUrlParser: true,
+    //   useUnifiedTopology: true,
+    // })
     .then(() => console.log("Database Connection Succesfull"));
 };
 
