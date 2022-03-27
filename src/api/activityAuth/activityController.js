@@ -3,12 +3,14 @@ import activityModel from "../../model/activityModel.js";
 
 // fetch all activity data
 export const fetchActivityData = async (req, res) => {
-  const { page, limit = 10 } = req.query;
+  let { page, limit = 10, sort } = req.query;
   if (!page) page = 1;
+  if (!sort) sort = -1;
   try {
     const activities = await activityModel
       .find({ deletedAt: null })
-      .sort({ createdAt: "desc" })
+      .sort({ createdAt: sort })
+      // .sort({ createdAt: "desc" })
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .exec();
