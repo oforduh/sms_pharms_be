@@ -12,12 +12,14 @@ import {
   deleteSelectedBranchData,
   restoreSelectedBranchData,
   emptyThrashBranchData,
+  fetchSingleBranchData,
 } from "./branchController.js";
 import { authenticateUser } from "../../helper/authenticateUser.js";
 
 router.post("/branch/register", authenticateUser, handleBranchRegistration);
 router.patch("/branch/:branchId", authenticateUser, updateBranchData);
 router.get("/branch", authenticateUser, fetchBranchData);
+router.get("/branch/:branchId", authenticateUser, fetchSingleBranchData);
 
 router.delete("/branch/delete/:branchId", authenticateUser, deleteBranchData);
 router.get(

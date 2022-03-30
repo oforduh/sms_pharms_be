@@ -1,10 +1,10 @@
 import branchModel from "../../model/branchModel.js";
 import diseaseModel from "../../model/diseaseModel.js";
 import activityModel from "../../model/activityModel.js";
-
 import responses from "../../helper/responses.js";
 import { handleError } from "../../helper/errorHandler.js";
 
+// Create a new branch
 export const handleBranchRegistration = async (req, res) => {
   try {
     const keys = Object.keys(req.body);
@@ -87,11 +87,32 @@ export const updateBranchData = async (req, res) => {
   }
 };
 
+// fetch a single branch data
+export const fetchSingleBranchData = async (req, res) => {
+  const branchId = req.params.branchId;
+  try {
+    const branch = await branchModel.findOne({ _id: branchId });
+    if (!branch)
+      return responses.not_found({
+        message: `branch not found`,
+      });
+    return responses.success({
+      res,
+      data: branch,
+    });
+  } catch (error) {fetchSingleBranchData
+    return responses.bad_request({
+      res,
+      message: `There is data with branch id (${branchId})`,
+    });
+  }
+};
+
 // fetch all branch data
 export const fetchBranchData = async (req, res) => {
   let { page, limit = 10, sort } = req.query;
   if (!page) page = 1;
-  if (!sort) sort = -1;
+  // if (!sort) sort = -1;
   try {
     const branchs = await branchModel
       .find({ deletedAt: null })
