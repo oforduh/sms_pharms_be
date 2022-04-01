@@ -19,6 +19,7 @@ import { authenticateUser } from "../../helper/authenticateUser.js";
 router.post("/branch/register", authenticateUser, handleBranchRegistration);
 router.patch("/branch/:branchId", authenticateUser, updateBranchData);
 router.get("/branch", authenticateUser, fetchBranchData);
+router.get("/branch/thrash", authenticateUser, fetchThrashedBranchData);
 router.get("/branch/:branchId", authenticateUser, fetchSingleBranchData);
 
 router.delete("/branch/delete/:branchId", authenticateUser, deleteBranchData);
@@ -27,7 +28,8 @@ router.get(
   authenticateUser,
   restoreThrashedBranchData
 );
-router.get("/branch/thrash", authenticateUser, fetchThrashedBranchData);
+
+
 router.delete(
   "/select/branch/delete",
   authenticateUser,

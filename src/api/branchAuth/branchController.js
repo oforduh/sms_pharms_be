@@ -100,7 +100,8 @@ export const fetchSingleBranchData = async (req, res) => {
       res,
       data: branch,
     });
-  } catch (error) {fetchSingleBranchData
+  } catch (error) {
+    fetchSingleBranchData;
     return responses.bad_request({
       res,
       message: `There is data with branch id (${branchId})`,
@@ -112,7 +113,7 @@ export const fetchSingleBranchData = async (req, res) => {
 export const fetchBranchData = async (req, res) => {
   let { page, limit = 10, sort } = req.query;
   if (!page) page = 1;
-  // if (!sort) sort = -1;
+  if (!sort) sort = -1;
   try {
     const branchs = await branchModel
       .find({ deletedAt: null })
@@ -128,7 +129,7 @@ export const fetchBranchData = async (req, res) => {
       });
 
     // get total documents in the activity collection
-    const count = await branchModel.countDocuments();
+    const count = await branchModel.countDocuments({ deletedAt: null });
 
     return responses.success({
       res,
@@ -229,19 +230,35 @@ export const restoreThrashedBranchData = async (req, res) => {
 
 // fetch all thrashed branch data
 export const fetchThrashedBranchData = async (req, res) => {
+  let { page, limit = 10, sort } = req.query;
+  if (!page) page = 1;
+  if (!sort) sort = -1;
   try {
     // https://masteringjs.io/tutorials/mongoose/query-string
-    const branchs = await branchModel.find({
-      deletedAt: { $ne: null },
-    });
+    const branchs = await branchModel
+      .find({
+        deletedAt: { $ne: null },
+      })
+      .sort({ createdAt: sort })
+      // .sort({ createdAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
     if (!branchs)
       return responses.not_found({
         message: `branchs not found`,
       });
+    // get total documents in the activity collection
+    const count = await branchModel.countDocuments({
+      deletedAt: { $ne: null },
+    });
+
     return responses.success({
       res,
       message: `There are ${branchs.length} thrashed records`,
       data: branchs,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
     });
   } catch (error) {
     console.log(error);
