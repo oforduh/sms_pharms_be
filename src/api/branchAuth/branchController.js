@@ -265,7 +265,7 @@ export const fetchThrashedBranchData = async (req, res) => {
     return responses.bad_request({ res, message: `Failed to fetch records` });
   }
 };
-// Restore Selected branches
+// Thrash Selected branches data
 export const thrashSelectedBranchData = async (req, res) => {
   try {
     const objId = req.body.id;
@@ -275,16 +275,19 @@ export const thrashSelectedBranchData = async (req, res) => {
       await branch.save();
     }
     const activity = new activityModel({
-      type: `All selected branch was restored`,
+      type: `All selected branch has been moved to thrash`,
       user: req.user._id,
     });
     await activity.save();
     return responses.success({
       res,
-      message: `All branches has been restored`,
+      message: `All branches has been moved to the thrash can`,
     });
   } catch (error) {
-    return responses.bad_request({ res, message: `Failed to restore data` });
+    return responses.bad_request({
+      res,
+      message: `Fail to thrash selected data`,
+    });
   }
 };
 
