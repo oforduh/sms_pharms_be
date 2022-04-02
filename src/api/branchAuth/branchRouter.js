@@ -24,22 +24,22 @@ router.get("/branch/:branchId", authenticateUser, fetchSingleBranchData);
 
 router.delete("/branch/delete/:branchId", authenticateUser, deleteBranchData);
 router.get(
+  "/select/branch/restore",
+  authenticateUser,
+  restoreSelectedBranchData
+);
+router.get(
   "/branch/restore/:branchId",
   authenticateUser,
   restoreThrashedBranchData
 );
-
 
 router.delete(
   "/select/branch/delete",
   authenticateUser,
   deleteSelectedBranchData
 );
-router.get(
-  "/select/branch/restore",
-  authenticateUser,
-  restoreSelectedBranchData
-);
+
 router.delete(
   "/branch/deleteAll/thrash",
   authenticateUser,
