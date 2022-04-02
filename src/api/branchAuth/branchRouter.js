@@ -13,6 +13,7 @@ import {
   restoreSelectedBranchData,
   emptyThrashBranchData,
   fetchSingleBranchData,
+  thrashSelectedBranchData,
 } from "./branchController.js";
 import { authenticateUser } from "../../helper/authenticateUser.js";
 
@@ -41,15 +42,20 @@ router.delete(
 );
 
 router.delete(
-  "/branch/deleteAll/thrash",
+  "/select/branch/thrash",
   authenticateUser,
-  emptyThrashBranchData
+  thrashSelectedBranchData
 );
-
 router.delete(
   "/branch/thrash/:branchId",
   authenticateUser,
   softDeleteBranchData
+);
+
+router.delete(
+  "/branch/deleteAll/thrash",
+  authenticateUser,
+  emptyThrashBranchData
 );
 
 export default router;

@@ -265,6 +265,28 @@ export const fetchThrashedBranchData = async (req, res) => {
     return responses.bad_request({ res, message: `Failed to fetch records` });
   }
 };
+// Restore Selected branches
+export const thrashSelectedBranchData = async (req, res) => {
+  try {
+    const objId = req.body.id;
+    for (let i = 0; i < objId.length; i++) {
+      let branch = await branchModel.findOne({ _id: objId[i] });
+      branch.deletedAt = Date.now();
+      await branch.save();
+    }
+    const activity = new activityModel({
+      type: `All selected branch was restored`,
+      user: req.user._id,
+    });
+    await activity.save();
+    return responses.success({
+      res,
+      message: `All branches has been restored`,
+    });
+  } catch (error) {
+    return responses.bad_request({ res, message: `Failed to restore data` });
+  }
+};
 
 // permanently delete Selected branches
 export const deleteSelectedBranchData = async (req, res) => {
