@@ -24,7 +24,7 @@ router.get("/branch/thrash", authenticateUser, fetchThrashedBranchData);
 router.get("/branch/:branchId", authenticateUser, fetchSingleBranchData);
 
 router.delete("/branch/delete/:branchId", authenticateUser, deleteBranchData);
-router.get(
+router.post(
   "/select/branch/restore",
   authenticateUser,
   restoreSelectedBranchData
