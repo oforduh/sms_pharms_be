@@ -74,6 +74,16 @@ const schema = new mongoose.Schema(
         },
       },
     ],
+
+    // Role
+    role: {
+      type: String,
+      default: "superAdmin",
+    },
+
+    permission: {
+      type: Array,
+    },
   },
   { timestamps: true }
 );

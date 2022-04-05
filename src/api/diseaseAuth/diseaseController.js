@@ -97,10 +97,13 @@ export const updateDiseaseData = async (req, res) => {
 
 // fetch all disease data
 export const fetchDiseaseData = async (req, res) => {
-  const { page = 1, limit = 10 } = req.query;
+  let { page, limit = 10, sort } = req.query;
+  if (!page) page = 1;
+  if (!sort) sort = -1;
   try {
     const diseases = await diseaseModel
       .find({ deletedAt: null })
+      .sort({ createdAt: sort })
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .exec();

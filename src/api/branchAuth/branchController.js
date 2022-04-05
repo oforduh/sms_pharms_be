@@ -177,8 +177,6 @@ export const deleteBranchData = async (req, res) => {
   const branchId = req.params.branchId;
   try {
     const branch = await branchModel.findOne({ _id: branchId });
-
-    console.log(branch);
     if (!branch)
       return responses.not_found({
         message: `branch not found`,
